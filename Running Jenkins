@@ -1,0 +1,32 @@
+to get jenkins up
+
+docker run \
+  -it \
+  -u root \
+  -p 8080:8080 \
+  -v /home/ec2-user/jenkins-data:/var/jenkins_home \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v "$HOME":/home \
+  jenkins/jenkins:lts
+  
+  
+ to install docker inside jenkins container
+ 
+ 1) docker exec -it container_id /bin/bash
+ 2) 
+ 
+ apt-get update && \
+apt-get -y install apt-transport-https \
+     ca-certificates \
+     curl \
+     gnupg2 \
+     software-properties-common && \
+curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg > /tmp/dkey; apt-key add /tmp/dkey && \
+add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
+   $(lsb_release -cs) \
+   stable" && \
+apt-get update && \
+apt-get -y install docker-ce
+usermod -aG docker jenkins && \
+    chown -R jenkins:jenkins $JENKINS_HOME/
