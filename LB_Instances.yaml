@@ -1,3 +1,5 @@
+================ Loadbalancer example ===============
+
 formatVersion: 1
 inputs: {}
 resources:
@@ -41,3 +43,30 @@ resources:
       constraints:
         - tag: 'env:aws'
 
+================ Simple EC2 instance ===============
+
+formatVersion: 1
+inputs:
+  sshkey:
+    type: string
+    encrypted: true
+    title: Enter SSH Key.
+    description: The SSH-Key for connectivity
+resources:
+  Cloud_Machine_1:
+    type: Cloud.Machine
+    properties:
+      image: linux_adr
+      flavor: micro_adr
+      count: 1
+      cloudConfig: |
+        #cloud-config
+        users:
+          - name: ubuntu
+            ssh-authorized-keys:
+              - ${input.sshkey}
+            sudo: ['ALL=(ALL) NOPASSWD:ALL']
+            groups: sudo
+            shell: /bin/bash
+      constraints:
+        - tag: 'env:adr_aws_env'
