@@ -1,0 +1,39 @@
+formatVersion: 1
+inputs: {}
+resources:
+  Cloud_Machine_1:
+    type: Cloud.Machine
+    properties:
+      image: linux_adr
+      flavor: micro_adr
+      count: 1
+      cloudConfig: |
+
+        users:
+          - name: ubuntu
+            ssh-authorized-keys:
+              - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDbuzFI5ZjJyOraeaUuCgemMqQrKAZqJlpdIkYaJ0DgrGST0FEw+IUr2krpzh5JhN917yn1eSuhFa6boFaDJan/nVvCNohBcz8S1kYgeqpS1LZ5mJfYrsAGUOpl95x9DqI9WNA1seW3DiRUyY8Q1Q67vwrGsge3G1rzwjAv5NoDay2XGDZagNgEYc+N6i8KkgqItbkIiY9/HMI86LkVCSAUNVEbP0LjFOaR60Uy4xdyVjy44y2e5GbqvvirmO0iVT5Sf9ZjaYRCKopqo7jgdDnAqqns5TrlfXDrnpsr16DKliVVDelHVgeoVTL/h2F/GP47ahMvsQXhfE+BeZC0SFPR'
+            sudo: ['ALL=(ALL) NOPASSWD:ALL']
+            groups: sudo
+            shell: /bin/bash
+
+            
+        apt:
+          sources:
+            docker:
+              source: "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
+              keyid: "9DC858229FC7DD38854AE2D88D81803C0EBFCD88" 
+        packages: ['docker-ce']
+        package_update: true
+
+
+        runcmd:
+          - sudo chmod 666 /var/run/docker.sock
+          - sudo groupadd docker
+          - sudo usermod -aG docker $USER
+          - echo 'Cloud-init is done!' >> /tmp/finished.txt
+
+          
+            
+      constraints:
+        - tag: 'env:adr_aws_env'
